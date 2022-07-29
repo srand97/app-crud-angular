@@ -1,0 +1,134 @@
+<div class="container m-3">
+    <H1>Registro de entradas</H1>
+</div>
+<div class="card m-5">
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-2">
+                <button (click) = 'openModalCreate()' type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCreate">
+                    Registrar Entrada
+                </button>
+            </div>
+            <div class="col">              
+                <a routerLink="/exits" type="button" class="btn btn-danger">
+                    Registro de salida
+                </a>
+            </div>
+        </div>  
+        <table class="table table-hover table-striped mt-3 text-center">
+            <thead class="bg-dark text-white ">
+                <tr>
+                    <th>Tipo de Vehiculo</th>
+                    <th>Placa</th>
+                    <th>Entrada</th>
+                    <th>Salida</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <tr *ngFor="let entry of entries">
+                        <td>{{entry?.tipo_v | nameType : types}}</td>
+                        <td>{{entry?.placa}}</td>
+                        <td>{{entry?.horaE}}</td>                       
+                        <td>
+                            <button 
+                                (click) = 'showFacture(entry)'
+                                data-bs-toggle="modal" data-bs-target="#modalFacture"
+                                class="btn btn-outline-danger" 
+                                > 
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+</div>
+<!-- modal de crear -->
+<div class="modal fade" id="modalCreate" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar Entrada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="createForm" (ngSubmit)="createEntrada()">                                  
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Tipo de Vehiculo</label>
+                        <div class="col-sm-8">
+                            <select class="form-select" formControlName="tipo_v" id="inputGroupSelect01">
+                                <option [value] = 'null' disabled>Seleccione</option>
+                                <option *ngFor = 'let type of types' [value]='type?.id'>{{type?.nameType}}</option>
+                                
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 ol-form-label">No. placa</label>
+                        <div class="col-sm-9">
+                            <input formControlName="placa" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonCancelCreate" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">Close</button>
+                        <button  type="submit" class="btn btn-success">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal FActura -->
+<div class="modal fade" id="modalFacture" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Factura generada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="formOutput">                                  
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Tipo de Vehiculo</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [value] = 'formOutput.get("tipo_v").value | nameType : types' readonly >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 ol-form-label">No. placa</label>
+                        <div class="col-sm-8">
+                            <input formControlName="placa" type="text" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Hora de entrada</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [value] = 'formOutput.get("horaE").value ' readonly >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Hora de salida</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [value] = 'formOutput.get("horaS").value ' readonly >
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label">Valor a pagar</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" [value] = '"$ " + formOutput.get("price").value ' readonly >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonCancelFacture" type="button" class="btn btn-danger"
+                            data-bs-dismiss="modal">Close</button>
+                        <button  type="submit" class="btn btn-success" (click) = 'checkOut()'>Registrar salida</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
